@@ -1,0 +1,25 @@
+version: 0.2
+
+# env:
+#   variables:
+#     DATABASE_HOST: "not-used"
+#     DATABASE_USER: "not-used"
+#     DATABASE_PASSWORD: "not-used"
+#     DATABASE_DB_NAME: "not-used"
+
+phases:
+  install:
+    commands:
+      - echo Install started on `date`
+      - cd reread
+      - composer install
+      - cp .env.example .env
+      - php artisan key:gen
+  build:
+    commands:
+      - echo Build started on `date`
+      - cd reread
+      - phpunit
+  post_build:
+    commands:
+      - echo Test completed on `date`
