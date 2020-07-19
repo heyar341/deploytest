@@ -24,10 +24,11 @@ phases:
   post_build:
     commands:
       - echo Test completed on `date`
+      - cd ../../
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
       - IMAGE_DEFINITION_PHP_FPM="{\"imageUri\":\"${COMMIT_HASH}\"}"
-      - echo "[${IMAGE_DEFINITION_PHP_FPM}]" > imagedefinition.json
+      - echo "${IMAGE_DEFINITION_PHP_FPM}" > imagedefinition.json
 
 artifacts:
     files: imagedefinition.json
