@@ -1,0 +1,108 @@
+{
+  "ipcMode": null,
+  "executionRoleArn": null,
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": [],
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": [],
+        "options": {
+          "awslogs-group": "Deploy-test-ProductService-GXFLKHWR4IN4",
+          "awslogs-region": "us-west-2"
+        }
+      },
+      "entryPoint": [],
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 8001
+        }
+      ],
+      "command": [],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": [],
+      "dnsServers": [],
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": [],
+      "dockerSecurityOptions": [],
+      "memory": 128,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": [],
+      "hostname": null,
+      "extraHosts": [],
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": {},
+      "systemControls": [],
+      "privileged": null,
+      "name": "product-service"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": null,
+  "taskRoleArn": null,
+  "compatibilities": [
+    "EC2"
+  ],
+  "taskDefinitionArn": "arn:aws:ecs:us-west-2:786869267134:task-definition/product-service:1",
+  "family": "product-service",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    }
+  ],
+  "pidMode": null,
+  "requiresCompatibilities": [],
+  "networkMode": null,
+  "cpu": null,
+  "revision": 1,
+  "status": "ACTIVE",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": []
+}
