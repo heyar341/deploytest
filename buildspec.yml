@@ -10,6 +10,7 @@ phases:
       - pip install --upgrade awscli==1.18.17
       - $(aws ecr get-login --no-include-email --region us-west-2)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - cp ./docker/base/reread/.env.example ./docker/base/reread/.env 
 
   build:
     commands:
