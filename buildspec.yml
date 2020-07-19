@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       - echo Install started on `date`
-      - pip install awscli --upgrade
+      - pip install --upgrade awscli==1.18.17
       - $(aws ecr get-login-password --no-include-email --region us-west-2)
       - COMMIT_HASH = $(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
 
