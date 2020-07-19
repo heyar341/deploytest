@@ -1,18 +1,16 @@
-FROM php:7.4-fpm-alpine3.11
 
-# install composer
-RUN cd /usr/bin \
-&& curl -s http://getcomposer.org/installer | php \
-&& ln -s /usr/bin/composer.phar /usr/bin/composer
+#最終ステージ
+#-------------------------
+FROM base_image:ver2 as base
+
+FROM php:7.4-fpm-alpine3.10
+
 RUN apk --no-cache update \
 && apk --no-cache add \
 git \
 zip \
 zlib-dev \
 unzip \
-vim \
-nodejs \
-nodejs-npm \
 #gd用パッケージ
 freetype \
 freetype-dev \
@@ -32,4 +30,14 @@ tzdata \
 && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
 && docker-php-ext-install -j$(nproc) gd
 
-WORKDIR /var/www/html
+ENV LANG ja_JP.utf8
+
+COPY --from=base /var/www/html/reread /var/www/html/reread
+
+WORKDIR /var/www/html/reread
+#         ↓=Rオプションがないとnginxから書き込みできない
+RUN chown -R www-data:www-data storage \
+&& chown -R www-data:www-data bootstrap/cache \
+&& chmod -R 775 storage \
+&& chmod -R 775 bootstrap/cache 
+USER www-data
