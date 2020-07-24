@@ -21,7 +21,7 @@ phases:
       - echo Build completed on `date`
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/deploy-test:$COMMIT_HASH
       - IMAGE_URL=786869267134.dkr.ecr.us-west-2.amazonaws.com/deploy-test:$COMMIT_HASH
-      - printf '[{"name":"deploy-test","imageUri":$IMAGE_URL}]' > imagedefinitions.json
+      - printf '[{"name":"deploy-test","imageUri":"${IMAGE_URL}"}]' > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
