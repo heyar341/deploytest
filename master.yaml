@@ -1,0 +1,119 @@
+Description: >
+
+  This template deploys a VPC, with a pair of public and private subnets spread 
+  across two Availabilty Zones. It deploys an Internet Gateway, with a default 
+  route on the public subnets. It deploys a pair of NAT Gateways (one in each AZ), 
+  and default routes for them in the private subnets.
+
+  It then deploys a highly available ECS cluster using an AutoScaling Group, with 
+  ECS hosts distributed across multiple Availability Zones. 
+
+  Finally, it deploys a pair of example ECS services from containers published in 
+  Amazon EC2 Container Registry (Amazon ECR).
+
+  Last Modified: 22nd September 2016
+  Author: Paul Maddox <pmaddox@amazon.com>
+
+Parameters:
+  ImageTag:
+    Type: String
+    Default: latest
+    
+Resources:
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/vpc.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        VpcCIDR: 10.0.0.0/16
+        PublicSubnet1CIDR: 10.0.1.0/24
+        PublicSubnet2CIDR: 10.0.2.0/24
+        PrivateSubnet1CIDR: 10.0.3.0/24
+        PrivateSubnet2CIDR: 10.0.4.0/24
+
+  SecurityGroups:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/security-groups.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        VPC: !GetAtt VPC.Outputs.VPC
+
+  # RDS:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/rds.yml
+  #     Parameters:
+  #       EnvironmentName: !Ref AWS::StackName
+  #       DBAllocatedStorage: '5'
+  #       DBInstanceClass: db.t3.micro
+  #       DBInstanceMasterPassword: rootroot
+  #       PrivateSubnet1: !GetAtt VPC.Outputs.PrivateSubnet1
+  #       PrivateSubnet2: !GetAtt VPC.Outputs.PrivateSubnet2
+  #       DBSecurityGroup: !GetAtt SecurityGroups.Outputs.DBSecurityGroup
+
+  ALB:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/load-balancers.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        VPC: !GetAtt VPC.Outputs.VPC
+        Subnets: !GetAtt VPC.Outputs.PublicSubnets
+        SecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
+
+  ECS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/ecs-cluster.yaml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        InstanceType: t2.micro
+        ClusterSize: 2
+        VPC: !GetAtt VPC.Outputs.VPC
+        SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
+        Subnets: !GetAtt VPC.Outputs.PublicSubnets
+
+  ProductService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/service.yaml
+      Parameters:
+        VPC: !GetAtt VPC.Outputs.VPC
+        Cluster: !GetAtt ECS.Outputs.Cluster
+        DesiredCount: 2
+        Listener: !GetAtt ALB.Outputs.Listener
+        Path: /products
+        ImageTag: !Ref ImageTag
+
+  # WebsiteService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: https://s3.amazonaws.com/ecs-refarch-cloudformation/services/website-service/service.yaml
+  #     Parameters:
+  #       VPC: !GetAtt VPC.Outputs.VPC
+  #       Cluster: !GetAtt ECS.Outputs.Cluster
+  #       DesiredCount: 2
+  #       ProductServiceUrl:
+  #         !Join ["/", [!GetAtt ALB.Outputs.LoadBalancerUrl, "products"]]
+  #       Listener: !GetAtt ALB.Outputs.Listener
+  #       Path: /
+  #       ECSServiceAutoScalingRoleARN: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
+
+  # LifecycleHook:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/lifecyclehook.yaml
+  #     Parameters:
+  #       Cluster: !GetAtt ECS.Outputs.Cluster
+  #       ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
+
+# Outputs:
+  # ProductServiceUrl:
+  #   Description: The URL endpoint for the product service
+  #   Value: !Join ["/", [!GetAtt ALB.Outputs.LoadBalancerUrl, "products"]]
+
+  # WebsiteServiceUrl:
+  #   Description: The URL endpoint for the website service
+  #   Value: !Join ["", [!GetAtt ALB.Outputs.LoadBalancerUrl, "/"]]
