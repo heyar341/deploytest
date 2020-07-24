@@ -16,13 +16,13 @@ phases:
     commands:
       - echo Build started on `date`
       - docker build -t base_image:ver2 ./docker/base
-      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest ./docker/php
-      - docker tag 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
+      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test::$COMMIT_HASH ./docker/php
+      # - docker tag 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
 
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest
+      # - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
       # - IMAGE_DEFINITION_PHP_FPM="{\"imageUri\":\"${COMMIT_HASH}\"}"
       # - echo "${IMAGE_DEFINITION_PHP_FPM}" > imagedefinition.json
