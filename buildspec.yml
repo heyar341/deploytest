@@ -15,20 +15,18 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - cd docker/base
-      - docker build -t base_image:ver2 .
-      - cd ../php
-      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest .
+      - docker build -t base_image:ver2 ./docker/build
+      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest ./docker/php
       - docker tag 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
 
   post_build:
     commands:
-      - echo Test completed on `date`
-      - cd ../../
+      - echo Build completed on `date`
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest
       - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
-      - IMAGE_DEFINITION_PHP_FPM="{\"imageUri\":\"${COMMIT_HASH}\"}"
-      - echo "${IMAGE_DEFINITION_PHP_FPM}" > imagedefinition.json
-
+      # - IMAGE_DEFINITION_PHP_FPM="{\"imageUri\":\"${COMMIT_HASH}\"}"
+      # - echo "${IMAGE_DEFINITION_PHP_FPM}" > imagedefinition.json
+      - printf '[{"name":"php-fpm-test","imageUri":"786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:${COMMIT_HASH}"}]' >
+      imagedefinitions.json
 artifacts:
-    files: imagedefinition.json
+    files: imagedefinitions.json
