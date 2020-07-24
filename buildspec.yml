@@ -15,8 +15,8 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - docker build -t base_image:ver2 ./docker/build
-      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest ./docker/php
+      - docker build -t base_image:ver2 /docker/build
+      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest /docker/php
       - docker tag 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:latest 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
 
   post_build:
