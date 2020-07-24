@@ -27,7 +27,7 @@ phases:
       # - IMAGE_DEFINITION_PHP_FPM="{\"imageUri\":\"${COMMIT_HASH}\"}"
       # - echo "${IMAGE_DEFINITION_PHP_FPM}" > imagedefinition.json
       - IMAGE_DIFINITION="{\"Parameters\":{\"ImageTag\":\"${COMMIT_HASH}\"}}"
-      - echo "[${IMAGE_DIFINITION}]" > imagedefinitions.json
+      - echo "${IMAGE_DIFINITION}" > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
