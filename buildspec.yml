@@ -9,7 +9,7 @@ phases:
       - echo Install started on `date`
       - pip install --upgrade awscli==1.18.17
       - echo $(aws sts get-caller-identity) > account_info.json
-      - ACCOUNT_ID=$(jq ".Account" account_info.json)
+      - ACCOUNT_ID=$(jq ".Account" account_info.json | sed "s/\"//g")
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - cp ./docker/base/reread/.env.example ./docker/base/reread/.env 
