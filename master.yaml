@@ -84,7 +84,7 @@ Resources:
         Cluster: !GetAtt ECS.Outputs.Cluster
         DesiredCount: 2
         Listener: !GetAtt ALB.Outputs.Listener
-        Path: /products
+        Path: /
         ImageTag: !Ref ImageTag
 
   # WebsiteService:
