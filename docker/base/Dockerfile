@@ -20,7 +20,7 @@ RUN composer install --no-dev \
 
 #２番目のステージ
 #--------------------------
-FROM node:13-alpine3.10 as node
+FROM node:12.16.2-alpine3.10 as node
 
 WORKDIR /var/www/html
 RUN mkdir reread
