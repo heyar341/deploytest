@@ -1,7 +1,7 @@
 
 #最終ステージ
 #-------------------------
-FROM base_image:ver2 as base
+FROM base_image as base
 
 FROM php:7.4-fpm-alpine3.10
 
