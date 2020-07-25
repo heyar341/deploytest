@@ -69,7 +69,7 @@ Resources:
       TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/ecs-cluster.yaml
       Parameters:
         EnvironmentName: !Ref AWS::StackName
-        InstanceType: t2.micro
+        InstanceType: t2.small
         ClusterSize: 2
         VPC: !GetAtt VPC.Outputs.VPC
         SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
