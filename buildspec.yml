@@ -8,7 +8,9 @@ phases:
     commands:
       - echo Install started on `date`
       - pip install --upgrade awscli==1.18.17
-      - $(aws ecr get-login --no-include-email --region us-west-2)
+      - echo $(aws sts get-caller-identity) > account_info.json
+      - ACCOUNT_ID=$(jq ".Account" account_info.json)
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - cp ./docker/base/reread/.env.example ./docker/base/reread/.env 
 
@@ -16,14 +18,16 @@ phases:
     commands:
       - echo Build started on `date`
       - docker build -t base_image:ver2 ./docker/base
-      - docker build -t 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH ./docker/php
+      - docker build -t $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/php-fpm-test:$COMMIT_HASH ./docker/php
+      - docker build -t $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/nginx-test:$COMMIT_HASH ./docker/web
 
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker push 786869267134.dkr.ecr.us-west-2.amazonaws.com/php-fpm-test:$COMMIT_HASH
-      - IMAGE_DIFINITION="{\"Parameters\":{\"ImageTag\":\"${COMMIT_HASH}\"}}"
-      - echo "${IMAGE_DIFINITION}" > imagedefinitions.json
-      - cat imagedefinitions.json
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/php-fpm-test:$COMMIT_HASH
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/nginx-test:$COMMIT_HASH
+      - IMAGE_TAG="{\"Parameters\":{\"ImageTag\":\"${COMMIT_HASH}\"}}"
+      - echo "${IMAGE_TAG}" > imagedetag.json
+      - cat imagedetag.json
 artifacts:
-    files: imagedefinitions.json
+    files: imagetag.json
