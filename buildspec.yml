@@ -27,7 +27,7 @@ phases:
       - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/php-fpm-test:$COMMIT_HASH
       - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/nginx-test:$COMMIT_HASH
       - IMAGE_TAG="{\"Parameters\":{\"ImageTag\":\"${COMMIT_HASH}\"}}"
-      - echo "${IMAGE_TAG}" > imagedetag.json
-      - cat imagedetag.json
+      - echo "${IMAGE_TAG}" > imagetag.json
+      - cat imagetag.json
 artifacts:
     files: imagetag.json
