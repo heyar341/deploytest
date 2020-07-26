@@ -40,18 +40,18 @@ Resources:
         EnvironmentName: !Ref AWS::StackName
         VPC: !GetAtt VPC.Outputs.VPC
 
-  # RDS:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/rds.yml
-  #     Parameters:
-  #       EnvironmentName: !Ref AWS::StackName
-  #       DBAllocatedStorage: '5'
-  #       DBInstanceClass: db.t3.micro
-  #       DBInstanceMasterPassword: rootroot
-  #       PrivateSubnet1: !GetAtt VPC.Outputs.PrivateSubnet1
-  #       PrivateSubnet2: !GetAtt VPC.Outputs.PrivateSubnet2
-  #       DBSecurityGroup: !GetAtt SecurityGroups.Outputs.DBSecurityGroup
+  RDS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/rds.yml
+      Parameters:
+        EnvironmentName: !Ref AWS::StackName
+        DBAllocatedStorage: '5'
+        DBInstanceClass: db.t3.micro
+        DBInstanceMasterPassword: rootroot
+        PrivateSubnet1: !GetAtt VPC.Outputs.PrivateSubnet1
+        PrivateSubnet2: !GetAtt VPC.Outputs.PrivateSubnet2
+        DBSecurityGroup: !GetAtt SecurityGroups.Outputs.DBSecurityGroup
 
   ALB:
     Type: AWS::CloudFormation::Stack
@@ -87,20 +87,6 @@ Resources:
         Path: /
         ImageTag: !Ref ImageTag
 
-  # WebsiteService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: https://s3.amazonaws.com/ecs-refarch-cloudformation/services/website-service/service.yaml
-  #     Parameters:
-  #       VPC: !GetAtt VPC.Outputs.VPC
-  #       Cluster: !GetAtt ECS.Outputs.Cluster
-  #       DesiredCount: 2
-  #       ProductServiceUrl:
-  #         !Join ["/", [!GetAtt ALB.Outputs.LoadBalancerUrl, "products"]]
-  #       Listener: !GetAtt ALB.Outputs.Listener
-  #       Path: /
-  #       ECSServiceAutoScalingRoleARN: !GetAtt ECS.Outputs.ECSServiceAutoScalingRole
-
   # LifecycleHook:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -109,11 +95,11 @@ Resources:
   #       Cluster: !GetAtt ECS.Outputs.Cluster
   #       ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
 
-# Outputs:
+Outputs:
   # ProductServiceUrl:
   #   Description: The URL endpoint for the product service
   #   Value: !Join ["/", [!GetAtt ALB.Outputs.LoadBalancerUrl, "products"]]
 
-  # WebsiteServiceUrl:
-  #   Description: The URL endpoint for the website service
-  #   Value: !Join ["", [!GetAtt ALB.Outputs.LoadBalancerUrl, "/"]]
+  WebsiteServiceUrl:
+    Description: The URL endpoint for the website service
+    Value: !Join ["", [!GetAtt ALB.Outputs.LoadBalancerUrl, "/"]]
