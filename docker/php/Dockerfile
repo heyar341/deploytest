@@ -42,4 +42,4 @@ RUN chown -R www-data:www-data storage \
 && chmod -R 775 bootstrap/cache 
 USER www-data
 
-ENTRYPOINT [ "php","artisan","migrate" ]
+# ENTRYPOINT [ "php","artisan","migrate" ]
