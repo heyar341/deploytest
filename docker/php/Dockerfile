@@ -7,6 +7,7 @@ FROM php:7.4-fpm-alpine3.10
 
 RUN apk --no-cache update \
 && apk --no-cache add \
+sudo \
 git \
 zip \
 zlib-dev \
@@ -33,6 +34,7 @@ tzdata \
 ENV LANG ja_JP.utf8
 
 COPY --from=base /var/www/html/reread /var/www/html/reread
+COPY ./www.conf /etc/php-fpm.d/www.conf
 
 WORKDIR /var/www/html/reread
 #         ↓=Rオプションがないとnginxから書き込みできない
