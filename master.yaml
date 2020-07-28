@@ -86,14 +86,15 @@ Resources:
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /
         ImageTag: !Ref ImageTag
+        TargetGroup: !GetAtt ALB.Outputs.TargetGroup
 
-  # LifecycleHook:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/lifecyclehook.yaml
-  #     Parameters:
-  #       Cluster: !GetAtt ECS.Outputs.Cluster
-  #       ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
+  LifecycleHook:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cloud-formation-templates-hu.s3-us-west-2.amazonaws.com/infrastructure/lifecyclehook.yaml
+      Parameters:
+        Cluster: !GetAtt ECS.Outputs.Cluster
+        ECSAutoScalingGroupName: !GetAtt ECS.Outputs.ECSAutoScalingGroupName
 
 Outputs:
   # ProductServiceUrl:

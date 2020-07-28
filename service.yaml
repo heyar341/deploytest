@@ -23,10 +23,13 @@ Parameters:
     Description: The path to register with the Application Load Balancer
     Type: String
     Default: /
-    
+
   ImageTag:
     Type: String
     Default: latest
+
+  TargetGroup:
+    Type: String  
 
 Resources:
   Service:
@@ -80,19 +83,19 @@ Resources:
       LogGroupName: !Ref AWS::StackName
       RetentionInDays: 365
 
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      VpcId: !Ref VPC
-      Port: 80
-      Protocol: HTTP
-      Matcher:
-        HttpCode: 200-299
-      HealthCheckIntervalSeconds: 300
-      HealthCheckPath: /
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 120
-      HealthyThresholdCount: 10
+  # TargetGroup:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     Port: 80
+  #     Protocol: HTTP
+  #     Matcher:
+  #       HttpCode: 200-299
+  #     HealthCheckIntervalSeconds: 300
+  #     HealthCheckPath: /
+  #     HealthCheckProtocol: HTTP
+  #     HealthCheckTimeoutSeconds: 120
+  #     HealthyThresholdCount: 10
 
   ListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
