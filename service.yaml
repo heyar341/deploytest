@@ -40,6 +40,7 @@ Resources:
       Role: !Ref ServiceRole
       DesiredCount: !Ref DesiredCount
       TaskDefinition: !Ref TaskDefinition
+      HealthCheckGracePeriodSeconds: 300
       LoadBalancers:
         - ContainerName: "nginx"
           ContainerPort: 80

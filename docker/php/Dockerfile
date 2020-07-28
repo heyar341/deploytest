@@ -44,4 +44,4 @@ RUN chown -R www-data:www-data storage \
 && chmod -R 775 bootstrap/cache 
 USER www-data
 
-CMD [ "php","artisan","migrate" ]
+# CMD [ "php","artisan","migrate" ]
